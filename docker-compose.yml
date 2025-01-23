@@ -1,0 +1,13 @@
+# docker-compose.yml
+services:
+  allastor-radio-daemon:
+    #build: .
+    image: ghcr.io/bnfone/discord-bot-alastor:development
+    container_name: alastor
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=
+      - CONFIG_PATH=/app/config.yaml
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+

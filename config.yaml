@@ -1,0 +1,37 @@
+# config.yaml
+radios:
+  BBC Radio 1:
+    url: "http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d48000.norewind.m3u8"
+  BBC World Service:
+    url: "http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d48000.norewind.m3u8"
+  Absolut Radio AI:
+    url: "https://absolut-ai.live-sm.absolutradio.de/absolut-ai"
+  Absolut Relax:
+    url: "https://absolut-relax.live-sm.absolutradio.de/absolut-relax"
+  Absolut 80er:
+    url: "https://absolut-80er.live-sm.absolutradio.de/absolut-80er"
+  Radio Bollerwagen:
+    url: "http://player.ffn.de/radiobollerwagen.m3u"
+  1Live:
+    url: "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3"
+  WDR2:
+    url: "https://wdr-wdr2-rheinland.icecastssl.wdr.de/wdr/wdr2/rheinland/mp3/128/stream.mp3"
+  NDR1:
+    url: "https://www.ndr.de/resources/metadaten/audio/m3u/ndr1niedersachsen.m3u"
+  N-JOY:
+    url: "https://www.ndr.de/resources/metadaten/audio/m3u/n-joy.m3u"
+  Die Maus:
+    url: "https://wdr-diemaus-live.icecastssl.wdr.de/wdr/diemaus/live/mp3/56/stream.mp3"
+  I Love Radio:
+    url: "https://ilovemusic.de/iloveradio.m3u"
+  I Love Mashup:
+    url: "https://www.ilovemusic.de/ilovemashup.m3u"
+  I Love the 90s:
+    url: "https://www.ilovemusic.de/ilovethe90s.m3u"
+  I Love X-Mas:
+    url: "https://www.ilovemusic.de/ilovexmas.m3u"
+  Pride Radio 1:
+    url: "https://stream.pride1.de/PRIDE1_48k_Stereo.aac"
+# Optional: Weitere Konfigurationen
+bot:
+  prefix: "!"
