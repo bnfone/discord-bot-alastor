@@ -82,3 +82,10 @@
 This bot is for private use only. Using it for public purposes might require compliance with local copyright laws, including potential GEMA fees for music or similar content.
 
 Please ensure you understand and comply with all applicable laws in your region.
+
+
+---
+
+### TO DO:
+- better structure
+- better error handling
