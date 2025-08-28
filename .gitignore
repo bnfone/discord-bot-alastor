@@ -160,3 +160,8 @@ cython_debug/
 #.idea/
 .DS_Store
 docker-compose.local.yml
+
+
+# Added by cargo
+
+/target

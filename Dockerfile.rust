@@ -1,0 +1,57 @@
+# Multi-stage build for optimal size and security
+FROM rust:1.75-slim as builder
+
+# Install system dependencies needed for compilation
+RUN apt-get update && \
+    apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy and build dependencies first (better caching)
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && \
+    echo "fn main() {}" > src/main.rs && \
+    cargo build --release && \
+    rm -rf src target/release/deps/alastor_bot*
+
+# Copy source code and build the actual application
+COPY src/ src/
+RUN cargo build --release
+
+# Runtime image
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    ffmpeg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for security
+RUN useradd -u 1000 -m -s /bin/bash alastor
+
+WORKDIR /app
+
+# Copy the binary from builder stage
+COPY --from=builder /app/target/release/alastor-bot /usr/local/bin/alastor-bot
+
+# Copy config file
+COPY config.yaml .
+
+# Change ownership to non-root user
+RUN chown -R alastor:alastor /app
+
+# Switch to non-root user
+USER alastor
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD pgrep alastor-bot || exit 1
+
+# Start the bot
+CMD ["alastor-bot"]

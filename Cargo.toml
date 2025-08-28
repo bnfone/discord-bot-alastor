@@ -1,0 +1,52 @@
+[package]
+name = "alastor-bot"
+version = "2.0.0"
+edition = "2021"
+description = "Alastor - The Radio Daemon: A high-performance Rust Discord radio bot"
+authors = ["Blake <89687390+bnfone@users.noreply.github.com>"]
+
+[dependencies]
+# Discord API and voice
+serenity = { version = "0.12", features = ["client", "gateway", "rustls_backend", "model", "cache", "framework", "standard_framework"] }
+songbird = { version = "0.4", features = ["builtin-queue"] }
+
+# Async runtime
+tokio = { version = "1.0", features = ["macros", "rt-multi-thread", "signal"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1.0"
+
+# HTTP client for stream resolution
+reqwest = { version = "0.11", features = ["json", "stream"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Fuzzy search
+fuzzy-matcher = "0.3"
+
+# Rate limiting
+governor = "0.6"
+
+# Concurrent data structures
+dashmap = "5.5"
+arc-swap = "1.6"
+
+# Time utilities
+chrono = { version = "0.4", features = ["serde"] }
+
+# Configuration
+figment = { version = "0.10", features = ["yaml", "env"] }
+
+# URL validation and parsing
+url = "2.4"
+
+# Levenshtein distance for fuzzy matching
+strsim = "0.10"

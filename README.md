@@ -71,10 +71,25 @@
 - `/info` - Shows info about the bot.
 - `/donate` - Shows a donation link.
 - `/radio list` - Provides a dropdown of all available radio stations.
+- `/radio choose` - Opens a station picker (select menu).
 - `/radio play [NAME]` - Plays the mentioned radio station (if configured in config.yml).
 - `/radio stop` - Stops the bot and leaves the voice channel.
 - `/radio play [NAME]` - Plays the mentioned radio station (if configured in config.yml).
 - `/radio info` - Shows the current playing radio station.
+
+The bot also posts a single persistent "Player" message with buttons for quick controls (Next, Stop) to avoid channel clutter.
+
+### Running the Rust Version (this branch)
+- Local run:
+  ```bash
+  export DISCORD_TOKEN=... # required
+  export ALASTOR_CONFIG_PATH=./config.yaml # optional
+  cargo run --release
+  ```
+- Docker (Rust):
+  ```bash
+  docker compose -f docker-compose.rust.yml up -d
+  ```
 
 ---
 

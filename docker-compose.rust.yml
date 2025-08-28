@@ -1,0 +1,28 @@
+services:
+  alastor-rust:
+    build:
+      context: .
+      dockerfile: Dockerfile.rust
+    container_name: discord-alastor-rust
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - ALASTOR_CONFIG_PATH=/app/config.yaml
+      - RUST_LOG=alastor_bot=info,serenity=warn,songbird=info
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    networks:
+      - alastor-network
+    mem_limit: 512m
+    cpus: 1.0
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  alastor-network:
+    driver: bridge
