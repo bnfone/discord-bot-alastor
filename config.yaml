@@ -1,9 +1,9 @@
 # config.yaml
 radios:
   BBC Radio 1:
-    url: "http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d48000.norewind.m3u8"
+    url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one"
   BBC World Service:
-    url: "http://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d48000.norewind.m3u8"
+    url: "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service"
   Absolut Radio AI:
     url: "https://absolut-ai.live-sm.absolutradio.de/absolut-ai"
   Absolut Relax:
@@ -32,6 +32,24 @@ radios:
     url: "https://www.ilovemusic.de/ilovexmas.m3u"
   Pride Radio 1:
     url: "https://stream.pride1.de/PRIDE1_48k_Stereo.aac"
+  Test Radio (Simple MP3):
+    url: "https://streams.ilovemusic.de/iloveradio1.mp3"
+  Direct Stream Test:
+    url: "http://ice1.somafm.com/groovesalad-256-mp3"
 # Optional: Weitere Konfigurationen
 bot:
   prefix: "!"
+  version: "2.0.0"
+  github_url: "https://github.com/bnfone/discord-bot-alastor"
+
+# Donation configuration
+donations:
+  - name: "Stripe"
+    url: "https://donate.stripe.com/6oE2bm5Y76vG9A47sz"
+    emoji: "💳"
+  # - name: "☕ Ko-fi" 
+  #   url: "https://ko-fi.com/yourname"
+  #   emoji: "☕"
+  - name: "PayPal"
+    url: "https://paypal.me/bnfone"
+    emoji: "💰"
