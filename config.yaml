@@ -12,11 +12,11 @@ radios:
     url: "https://absolut-80er.live-sm.absolutradio.de/absolut-80er"
   Radio Bollerwagen:
     url: "http://player.ffn.de/radiobollerwagen.m3u"
-  1Live:
+  1LIVE:
     url: "https://wdr-1live-live.icecastssl.wdr.de/wdr/1live/live/mp3/128/stream.mp3"
-  WDR2:
+  WDR 2:
     url: "https://wdr-wdr2-rheinland.icecastssl.wdr.de/wdr/wdr2/rheinland/mp3/128/stream.mp3"
-  NDR1:
+  NDR 1:
     url: "https://www.ndr.de/resources/metadaten/audio/m3u/ndr1niedersachsen.m3u"
   N-JOY:
     url: "https://www.ndr.de/resources/metadaten/audio/m3u/n-joy.m3u"
@@ -34,8 +34,34 @@ radios:
     url: "https://stream.pride1.de/PRIDE1_48k_Stereo.aac"
   Test Radio (Simple MP3):
     url: "https://streams.ilovemusic.de/iloveradio1.mp3"
-  Direct Stream Test:
-    url: "http://ice1.somafm.com/groovesalad-256-mp3"
+  Radio Paradise Global (no ADs):
+    url: "http://stream.radioparadise.com/global-128"
+  n5MD Radio (no ADs):
+    url: "https://somafm.com/n5md130.pls"
+  Digitalis (no ADs):
+    url: "https://somafm.com/digitalis130.pls"
+  The Dark Zone (no ADs):
+    url: "https://somafm.com/darkzone130.pls"
+  Heavyweight Reggae (no ADs):
+    url: "https://somafm.com/reggae130.pls"
+  Left Coast 70s (no ADs):
+    url: "https://somafm.com/seventies130.pls"
+  DEF CON Radio (no ADs):
+    url: "https://somafm.com/defcon130.pls"
+  Synphaera Radio (no ADs):
+    url: "https://somafm.com/synphaera130.pls"
+  Underground 80s (no ADs):
+    url: "https://somafm.com/u80s130.pls"
+  Deep Space One (no ADs):
+    url: "https://somafm.com/deepspaceone130.pls"
+  Indie Pop Rocks! (no ADs):
+    url: "https://somafm.com/indiepop130.pls"
+  Drone Zone (no ADs):
+    url: "https://somafm.com/dronezone130.pls"
+  Groove Salad (no ADs):
+    url: "https://somafm.com/groovesalad130.pls"
+
+
 # Optional: Weitere Konfigurationen
 bot:
   prefix: "!"
