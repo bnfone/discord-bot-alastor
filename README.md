@@ -22,11 +22,44 @@
 
 ---
 
+## Bot Setup & Discord Permissions
+
+### Creating a Discord Bot
+1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
+2. Create a new application and bot
+3. Copy the bot token for later use
+
+### Required Bot Permissions
+When adding the bot to your Discord server, ensure these permissions are selected:
+
+**General Permissions:**
+- View Channels
+- Send Messages
+- Embed Links
+
+**Voice Permissions (CRITICAL for radio functionality):**
+- Connect (to join voice channels)
+- Speak (to play audio)
+- Use Voice Activity (for audio streaming)
+
+**Bot Invite URL:**
+Use this URL template and replace `YOUR_BOT_CLIENT_ID` with your bot's Client ID:
+```
+https://discord.com/api/oauth2/authorize?client_id=YOUR_BOT_CLIENT_ID&permissions=3145728&scope=bot%20applications.commands
+```
+
+**Permission Value:** `3145728` includes all required permissions above.
+
+**⚠️ Important:** Without proper voice permissions, the bot will fail to connect with error code 4006.
+
+---
+
 ## How to Use the Bot
 
 ### Prerequisites
 - Docker installed on your system.
 - Basic knowledge of Docker and `docker-compose`.
+- A Discord bot token (see Bot Setup section below).
 
 ### Setup
 1. Clone the repository:

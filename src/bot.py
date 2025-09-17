@@ -60,6 +60,7 @@ logger.info("🔐 Discord token loaded successfully")
 intents = discord.Intents.default()
 intents.message_content = True
 intents.voice_states = True
+intents.guilds = True
 
 bot = commands.Bot(
     command_prefix=BOT_PREFIX,

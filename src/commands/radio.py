@@ -349,49 +349,139 @@ class RadioCog(commands.Cog):
             current_vc = current_radios[guild_id]["voice_client"]
             current_vc.stop()
 
-        # Connect or move to the correct voice channel
-        if not voice_client or not voice_client.is_connected():
-            logger.info(f"🔊 Connecting to voice channel: {voice_channel.name}")
-            try:
-                await asyncio.wait_for(voice_channel.connect(), timeout=10.0)
-                voice_client = discord.utils.get(interaction.client.voice_clients, guild=interaction.guild)
-                logger.info(f"✅ Successfully connected to {voice_channel.name}")
-            except asyncio.TimeoutError:
-                logger.error(f"⏰ Connection timeout to {voice_channel.name}")
-                embed = Embed(
-                    title="Error",
-                    description="Failed to connect to the voice channel (timeout).",
-                    color=discord.Color.red()
-                )
-                embed.set_footer(text="Alastor - The Radio Daemon")
-                await safe_send_message(interaction, embed=embed, ephemeral=True)
-                return
-            except Exception as e:
-                logger.error(f"❌ Voice connection error: {e}")
-                embed = Embed(
-                    title="Error",
-                    description=f"Error joining voice channel: {e}",
-                    color=discord.Color.red()
-                )
-                embed.set_footer(text="Alastor - The Radio Daemon")
-                await safe_send_message(interaction, embed=embed, ephemeral=True)
-                return
-        else:
-            if voice_client.channel.id != voice_channel.id:
-                logger.info(f"🔄 Moving from {voice_client.channel.name} to {voice_channel.name}")
+        # Always clean up any existing voice clients first
+        logger.info(f"🔊 Connecting to voice channel: {voice_channel.name}")
+        logger.info(f"🌍 Server: {interaction.guild.name} (ID: {interaction.guild_id})")
+        logger.info(f"🔊 Channel: {voice_channel.name} (ID: {voice_channel.id})")
+        logger.info(f"🌐 Voice region: {getattr(interaction.guild, 'region', 'Unknown')}")
+        logger.info(f"👤 Bot permissions: {voice_channel.permissions_for(interaction.guild.me)}")
+        
+        try:
+            # Force cleanup of any existing voice connections for this guild
+            existing_vcs = [vc for vc in interaction.client.voice_clients if vc.guild.id == interaction.guild_id]
+            for vc in existing_vcs:
                 try:
-                    await voice_client.move_to(voice_channel)
-                    logger.info(f"✅ Successfully moved to {voice_channel.name}")
-                except Exception as e:
-                    logger.error(f"❌ Voice move error: {e}")
-                    embed = Embed(
-                        title="Error",
-                        description=f"Error moving to voice channel: {e}",
-                        color=discord.Color.red()
-                    )
-                    embed.set_footer(text="Alastor - The Radio Daemon")
-                    await safe_send_message(interaction, embed=embed, ephemeral=True)
-                    return
+                    if vc.is_connected():
+                        vc.stop()
+                        await vc.disconnect(force=True)
+                        logger.info("🔄 Cleaned up existing voice connection")
+                except Exception as cleanup_error:
+                    logger.warning(f"⚠️ Error during cleanup: {cleanup_error}")
+            
+            # Wait for cleanup to complete
+            await asyncio.sleep(1.5)
+            
+            # Connect with retry logic
+            voice_client = None
+            for attempt in range(3):
+                try:
+                    logger.info(f"🔄 Connection attempt {attempt + 1}/3")
+                    voice_client = await asyncio.wait_for(voice_channel.connect(reconnect=False, timeout=60.0), timeout=20.0)
+                    logger.info(f"✅ Successfully connected to {voice_channel.name} (attempt {attempt + 1})")
+                    break
+                except discord.errors.ConnectionClosed as e:
+                    logger.warning(f"🔄 Connection closed (attempt {attempt + 1}): {e}")
+                    # Log the voice endpoint for debugging
+                    logger.warning(f"🌐 Failed endpoint: {getattr(e, 'endpoint', 'Unknown')}")
+                    if attempt < 2:  # Not the last attempt
+                        await asyncio.sleep(5)  # Wait even longer before retry
+                        continue
+                    else:
+                        raise
+                except discord.errors.ClientException as e:
+                    if "Already connected" in str(e):
+                        logger.warning(f"🔄 Bot thinks it's connected, forcing cleanup (attempt {attempt + 1})")
+                        # Force more aggressive cleanup
+                        for vc in interaction.client.voice_clients:
+                            if vc.guild.id == interaction.guild_id:
+                                try:
+                                    await vc.disconnect(force=True)
+                                except:
+                                    pass
+                        await asyncio.sleep(2)
+                        if attempt < 2:
+                            continue
+                        else:
+                            raise
+                    else:
+                        raise
+                except asyncio.TimeoutError:
+                    logger.warning(f"⏰ Connection timeout (attempt {attempt + 1})")
+                    if attempt < 2:  # Not the last attempt
+                        await asyncio.sleep(3)  # Wait before retry
+                        continue
+                    else:
+                        raise
+            
+            if not voice_client:
+                raise Exception("Failed to establish voice connection after 3 attempts")
+                        
+        except asyncio.TimeoutError:
+            logger.error(f"⏰ Connection timeout to {voice_channel.name}")
+            embed = Embed(
+                title="❌ Connection Timeout",
+                description="Failed to connect to the voice channel. This might be due to:\n• Discord server issues\n• Network connectivity problems\n• Bot token permissions\n\nPlease try again in a moment.",
+                color=discord.Color.red()
+            )
+            embed.set_footer(text="Alastor - The Radio Daemon")
+            await safe_send_message(interaction, embed=embed, ephemeral=True)
+            return
+        except discord.errors.ConnectionClosed as e:
+            logger.error(f"❌ Voice connection closed: {e}")
+            embed = Embed(
+                title="❌ Connection Failed",
+                description="Discord voice connection was closed. This usually indicates:\n• Bot permissions issue\n• Invalid bot token\n• Discord API problems\n\nCheck bot permissions and try again.",
+                color=discord.Color.red()
+            )
+            embed.set_footer(text="Alastor - The Radio Daemon")
+            await safe_send_message(interaction, embed=embed, ephemeral=True)
+            return
+        except discord.errors.ClientException as e:
+            if "Already connected" in str(e):
+                logger.error(f"❌ Persistent connection conflict: {e}")
+                embed = Embed(
+                    title="❌ Connection Conflict",
+                    description="The bot is stuck in a connection state. This usually resolves itself in a few moments.\n\nPlease wait 30 seconds and try again, or restart the bot.",
+                    color=discord.Color.red()
+                )
+            else:
+                logger.error(f"❌ Voice client error: {e}")
+                embed = Embed(
+                    title="❌ Voice Client Error",
+                    description=f"Discord client error: {str(e)[:200]}{'...' if len(str(e)) > 200 else ''}",
+                    color=discord.Color.red()
+                )
+            embed.set_footer(text="Alastor - The Radio Daemon")
+            await safe_send_message(interaction, embed=embed, ephemeral=True)
+            return
+        except Exception as e:
+            logger.error(f"❌ Voice connection error: {e}")
+            embed = Embed(
+                title="❌ Connection Error",
+                description=f"Error joining voice channel: {str(e)[:200]}{'...' if len(str(e)) > 200 else ''}",
+                color=discord.Color.red()
+            )
+            embed.set_footer(text="Alastor - The Radio Daemon")
+            await safe_send_message(interaction, embed=embed, ephemeral=True)
+            return
+        
+        # If we reach here, we have a successful connection
+        # Check if we need to move to a different channel
+        if voice_client and voice_client.is_connected() and voice_client.channel.id != voice_channel.id:
+            logger.info(f"🔄 Moving from {voice_client.channel.name} to {voice_channel.name}")
+            try:
+                await voice_client.move_to(voice_channel)
+                logger.info(f"✅ Successfully moved to {voice_channel.name}")
+            except Exception as e:
+                logger.error(f"❌ Voice move error: {e}")
+                embed = Embed(
+                    title="❌ Move Error",
+                    description=f"Error moving to voice channel: {e}",
+                    color=discord.Color.red()
+                )
+                embed.set_footer(text="Alastor - The Radio Daemon")
+                await safe_send_message(interaction, embed=embed, ephemeral=True)
+                return
 
         original_url = available_stations[station_name]["url"]
         logger.info(f"🔗 Resolving stream URL for '{station_name}': {original_url[:60]}...")
