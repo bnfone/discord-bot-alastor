@@ -95,15 +95,31 @@ async def resolve_stream_url(url: str) -> Optional[str]:
                 async with session.get(url) as response:
                     response.raise_for_status()
                     text = await response.text()
-                    for line in text.splitlines():
-                        line = line.strip()
-                        if line and not line.startswith("#") and line.startswith(("http", "https")):
-                            # Cache the result
-                            stream_cache[url] = {
-                                "resolved_url": line,
-                                "timestamp": time.time()
-                            }
-                            return line
+                    
+                    # Handle .pls format
+                    if lower_url.endswith(".pls"):
+                        for line in text.splitlines():
+                            line = line.strip()
+                            if line.startswith("File") and "=" in line:
+                                stream_url = line.split("=", 1)[1]
+                                if stream_url.startswith(("http", "https")):
+                                    # Cache the result
+                                    stream_cache[url] = {
+                                        "resolved_url": stream_url,
+                                        "timestamp": time.time()
+                                    }
+                                    return stream_url
+                    else:
+                        # Handle .m3u/.m3u8 format
+                        for line in text.splitlines():
+                            line = line.strip()
+                            if line and not line.startswith("#") and line.startswith(("http", "https")):
+                                # Cache the result
+                                stream_cache[url] = {
+                                    "resolved_url": line,
+                                    "timestamp": time.time()
+                                }
+                                return line
         except Exception as e:
             logging.error(f"Error resolving playlist URL {url}: {e}")
             return None

@@ -57,15 +57,17 @@ https://discord.com/api/oauth2/authorize?client_id=YOUR_BOT_CLIENT_ID&permission
 ## How to Use the Bot
 
 ### Prerequisites
-- Docker installed on your system.
-- Basic knowledge of Docker and `docker-compose`.
+- **Option 1:** Docker installed on your system.
+- **Option 2:** Python 3.10+ with virtual environment support (recommended for development).
 - A Discord bot token (see Bot Setup section below).
 
 ### Setup
+
+#### Option 1: Docker Setup (Production)
 1. Clone the repository:
    ```bash
-   git clone https://github.com/bnfone/discord-bot-alastor.git
-   cd discord-bot-alastor
+   git clone https://github.com/bnfone/alastor-bot.git
+   cd alastor-bot
    ```
 
 2. Create a `docker-compose.yml` file with the following content:
@@ -99,6 +101,46 @@ https://discord.com/api/oauth2/authorize?client_id=YOUR_BOT_CLIENT_ID&permission
    ```bash
    docker-compose logs -f
    ```
+
+#### Option 2: Local Development Setup (Virtual Environment)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/bnfone/alastor-bot.git
+   cd alastor-bot
+   ```
+
+2. Create and activate a virtual environment (Python 3.10 recommended):
+   ```bash
+   # Set Python version to 3.10 if using pyenv
+   pyenv local 3.10.13
+   
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file in the project root:
+   ```bash
+   # Discord Bot Token
+   DISCORD_TOKEN=your-bot-token-here
+   ```
+
+5. Ensure `config.yaml` exists with your radio stations (see Docker setup above for example).
+
+6. Run the bot:
+   ```bash
+   python -m src.bot
+   ```
+
+**⚠️ Note:** Python 3.13 is not supported due to removed `audioop` module. Use Python 3.10-3.12.
 
 ### Bot Commands
 - `/info` - Shows info about the bot.
